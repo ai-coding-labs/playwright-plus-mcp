@@ -57,7 +57,9 @@ const defaultConfig: FullConfig = {
   browser: {
     browserName: 'chromium',
     launchOptions: {
-      channel: 'chrome',
+      // Note: Do not set channel by default to use Playwright's bundled Chromium
+      // which works better with extensions. Users can override with 'chrome' if needed.
+      // channel: 'chrome', 
       headless: os.platform() === 'linux' && !process.env.DISPLAY,
       chromiumSandbox: true,
     },

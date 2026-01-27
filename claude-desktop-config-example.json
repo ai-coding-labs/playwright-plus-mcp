@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "mcp-server-playwright",
+      "args": [
+        "--config",
+        "/Users/cc11001100/github/vibe-coding-labs/playwright-plus-mcp/playwright-mcp-config.json",
+        "--project-isolation"
+      ],
+      "env": {}
+    }
+  }
+}
+
+

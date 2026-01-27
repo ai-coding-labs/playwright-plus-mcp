@@ -6,7 +6,18 @@ playwright-report/
 .idea
 .DS_Store
 .env
+.env.local
 sessions/
+
+# Build directories
+build/
+dist/
+out/
+.nyc_output/
+coverage/
+
+test-user-data-dir/
+test-user-data-dir-config/
 
 # Log files
 *.log
@@ -15,5 +26,60 @@ sessions/
 server.log
 nohup.out
 
+# Debug and test files
+debug-*.js
+test-*.js
+test-*.png
+verify-*.js
+
 # Playwright MCP session data (auto-generated)
 .user-session-data-directory/
+
+# Editor and IDE files
+*.swp
+*.swo
+*~
+.vs/
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+.DS_Store
+
+# Environment specific files
+.env*
+!.env.example
+
+# Temporary files
+*.tmp
+*.temp
+
+# Package manager files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Configuration files (if they contain sensitive data)
+*.config.json
+!playwright-mcp-config.json
+
+# Desktop specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might contain sensitive data
+*.key
+*.pem
+*.crt
+*.cert

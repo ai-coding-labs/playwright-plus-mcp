@@ -5,9 +5,14 @@
       "channel": "chrome",
       "headless": false,
       "args": [
-        "--load-extension=/Users/cc11001100/github/JSREI/playwright-plus-mcp-with-chrome-extention-example/dist"
+        "--disable-extensions-except=/Users/cc11001100/github/deepjob/deepjob/deep-offer-browser-extension/dist",
+        "--load-extension=/Users/cc11001100/github/deepjob/deepjob/deep-offer-browser-extension/dist"
       ]
-    }
+    },
+    "contextOptions": {
+      "userDataDir": "/Users/cc11001100/github/vibe-coding-labs/playwright-plus-mcp/browser-userdata-chrome"
+    },
+    "comment": "Using system Chrome browser. Extension loading may be limited. Changed userDataDir to avoid conflicts with Chromium data."
   },
   "projectIsolation": true
 }
