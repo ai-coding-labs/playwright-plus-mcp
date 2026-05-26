@@ -44,6 +44,10 @@ export class Response {
     this._result.push(result);
   }
 
+  addText(text: string) {
+    this._result.push(text);
+  }
+
   addError(error: string) {
     this._result.push(error);
     this._isError = true;

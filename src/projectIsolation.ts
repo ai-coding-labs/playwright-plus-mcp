@@ -31,16 +31,16 @@ export interface ProjectInfo {
  * 项目隔离参数的Zod Schema
  */
 export const projectIsolationSchema = z.object({
-  projectDrive: z.string().optional().describe('Project drive letter or root (e.g., "C:", "/") for session isolation'),
-  projectPath: z.string().optional().describe('Absolute path to project root directory for session isolation'),
+  projectDrive: z.string().describe('Project drive letter or root (e.g., "C:", "/") for session isolation'),
+  projectPath: z.string().describe('Absolute path to project root directory for session isolation'),
 });
 
 /**
  * 项目隔离参数的属性定义（用于避免使用.merge()导致的allOf问题）
  */
 export const projectIsolationProperties = {
-  projectDrive: z.string().optional().describe('Project drive letter or root (e.g., "C:", "/") for session isolation'),
-  projectPath: z.string().optional().describe('Absolute path to project root directory for session isolation'),
+  projectDrive: z.string().describe('Project drive letter or root (e.g., "C:", "/") for session isolation'),
+  projectPath: z.string().describe('Absolute path to project root directory for session isolation'),
 } as const;
 
 /**
@@ -57,59 +57,43 @@ export function createSchemaWithProjectIsolation<T extends Record<string, any>>(
  * 验证项目隔离参数
  */
 export function validateProjectIsolationParams(params: any): boolean {
-  // 两个参数要么都提供，要么都不提供
-  return (!!params.projectDrive && !!params.projectPath) || (!params.projectDrive && !params.projectPath);
+  // 两个参数必须同时提供
+  return !!params.projectDrive && !!params.projectPath;
 }
 
 /**
- * 验证项目隔离参数（考虑配置）
- * 当项目隔离启用时，必须提供两个参数；否则参数可选
+ * 验证项目隔离参数（忽略配置）
+ * 项目隔离参数始终必须提供
  */
 export function validateProjectIsolationParamsWithConfig(
   params: any,
-  projectIsolationEnabled: boolean
+  _projectIsolationEnabled: boolean
 ): boolean {
-  // 首先检查参数一致性
-  const paramsConsistent = validateProjectIsolationParams(params);
-  if (!paramsConsistent)
-    return false;
-
-
-  // 如果启用了项目隔离，必须提供两个参数
-  if (projectIsolationEnabled)
-    return !!(params.projectDrive && params.projectPath);
-
-
-  // 如果没有启用项目隔离，参数可选
-  return true;
+  return validateProjectIsolationParams(params);
 }
 
 /**
  * 生成详细的项目隔离参数错误信息
  */
-export function getProjectIsolationErrorMessage(projectIsolationEnabled: boolean): string {
-  if (projectIsolationEnabled) {
-    return [
-      'Project isolation is enabled but required parameters are missing.',
-      '',
-      'Required parameters:',
-      '• projectDrive: Project drive letter or root directory',
-      '• projectPath: Absolute path to your project root directory',
-      '',
-      'Examples:',
-      '• Windows: projectDrive="C:", projectPath="C:\\Users\\username\\my-project"',
-      '• macOS/Linux: projectDrive="/", projectPath="/Users/username/my-project"',
-      '',
-      'How to obtain these values:',
-      '• projectDrive: The root of your file system (Windows: drive letter like "C:", Unix: "/")',
-      '• projectPath: The absolute path to your current project directory',
-      '• You can get the current directory path using: pwd (Unix) or cd (Windows)',
-      '',
-      'This ensures each project has isolated browser sessions and prevents data mixing between projects.'
-    ].join('\n');
-  } else {
-    return 'Both projectDrive and projectPath must be provided together, or neither should be provided.';
-  }
+export function getProjectIsolationErrorMessage(_projectIsolationEnabled: boolean): string {
+  return [
+    'Project isolation parameters are required but missing.',
+    '',
+    'Required parameters:',
+    '• projectDrive: Project drive letter or root directory',
+    '• projectPath: Absolute path to your project root directory',
+    '',
+    'Examples:',
+    '• Windows: projectDrive="C:", projectPath="C:\\Users\\username\\my-project"',
+    '• macOS/Linux: projectDrive="/", projectPath="/Users/username/my-project"',
+    '',
+    'How to obtain these values:',
+    '• projectDrive: The root of your file system (Windows: drive letter like "C:", Unix: "/")',
+    '• projectPath: The absolute path to your current project directory',
+    '• You can get the current directory path using: pwd (Unix) or cd (Windows)',
+    '',
+    'This ensures each project has isolated browser sessions and prevents data mixing between projects.'
+  ].join('\n');
 }
 
 /**

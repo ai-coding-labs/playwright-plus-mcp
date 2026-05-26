@@ -118,14 +118,8 @@ export class ProjectIsolationManager {
 ```typescript
 // 在 src/projectIsolation.ts 中定义
 export const projectIsolationSchema = z.object({
-  projectDrive: z.string().optional().describe('Project drive letter or root (e.g., "C:", "/") for session isolation'),
-  projectPath: z.string().optional().describe('Absolute path to project root directory for session isolation')
-}).refine(data => {
-  // 两个参数要么都提供，要么都不提供
-  return (!!data.projectDrive && !!data.projectPath) || (!data.projectDrive && !data.projectPath);
-}, {
-  message: 'Both projectDrive and projectPath must be provided together, or neither should be provided.',
-  path: ['projectDrive', 'projectPath']
+  projectDrive: z.string().describe('Project drive letter or root (e.g., "C:", "/") for session isolation'),
+  projectPath: z.string().describe('Absolute path to project root directory for session isolation')
 });
 ```
 

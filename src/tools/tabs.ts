@@ -16,7 +16,7 @@
 
 import { z } from 'zod';
 import { defineTool } from './tool.js';
-import { createSchemaWithProjectIsolation, validateProjectIsolationParams } from '../projectIsolation.js';
+import { createSchemaWithProjectIsolation, getProjectIsolationErrorMessage, validateProjectIsolationParams } from '../projectIsolation.js';
 
 const listTabs = defineTool({
   capability: 'core-tabs',
@@ -32,7 +32,7 @@ const listTabs = defineTool({
   handle: async (context, params, response) => {
     // 验证项目隔离参数
     if (!validateProjectIsolationParams(params))
-      throw new Error('Both projectDrive and projectPath must be provided together, or neither should be provided.');
+      throw new Error(getProjectIsolationErrorMessage(!!context.config.projectIsolation));
 
 
     // 处理项目信息（仅在首次调用时）
@@ -83,7 +83,7 @@ const newTab = defineTool({
   handle: async (context, params, response) => {
     // 验证项目隔离参数
     if (!validateProjectIsolationParams(params))
-      throw new Error('Both projectDrive and projectPath must be provided together, or neither should be provided.');
+      throw new Error(getProjectIsolationErrorMessage(!!context.config.projectIsolation));
 
 
     // 处理项目信息（仅在首次调用时）

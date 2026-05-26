@@ -15,7 +15,7 @@
  */
 
 import { SessionDirectoryManager   } from './sessionDirectoryManager.js';
-import { ProjectIsolationManager,  validateProjectIsolationParams } from './projectIsolation.js';
+import { ProjectIsolationManager, getProjectIsolationErrorMessage, validateProjectIsolationParams } from './projectIsolation.js';
 import type { SessionDirectoryOptions, SessionDirectoryStrategy } from './sessionDirectoryManager.js';
 import type { ProjectInfo } from './projectIsolation.js';
 import type { Config } from '../config.js';
@@ -55,7 +55,7 @@ export class EnhancedProjectIsolationManager {
     // 获取项目信息
     const projectInfo = this.extractProjectInfo(toolParams);
     if (!projectInfo || !validateProjectIsolationParams(projectInfo))
-      throw new Error('Project isolation is enabled but required parameters are missing. Please provide both projectDrive and projectPath parameters.');
+      throw new Error(getProjectIsolationErrorMessage(!!config.projectIsolation));
 
 
     // 获取会话策略（默认为'system'，用户无感知）

@@ -60,9 +60,23 @@ export class Context {
   }
 
   setProjectInfo(projectInfo: ProjectInfo): void {
-    if (!this._projectInfo && (projectInfo.projectDrive || projectInfo.projectPath))
-      this._projectInfo = projectInfo;
-
+    // 如果提供了新的项目信息
+    if (projectInfo.projectDrive && projectInfo.projectPath) {
+      // 检查是否是新项目路径
+      const isNewProject = !this._projectInfo || 
+        this._projectInfo.projectPath !== projectInfo.projectPath ||
+        this._projectInfo.projectDrive !== projectInfo.projectDrive;
+      
+      if (isNewProject) {
+        // 项目发生变化，更新 projectInfo
+        this._projectInfo = projectInfo;
+        // 如果有现有的 browser context，关闭它以便下次重新创建
+        if (this._browserContextPromise) {
+          testDebug('project changed, closing browser context to recreate with new user data dir');
+          void this.closeBrowserContext().catch(logUnhandledError);
+        }
+      }
+    }
   }
 
   getProjectInfo(): ProjectInfo | undefined {
@@ -104,8 +118,17 @@ export class Context {
   async newTab(): Promise<Tab> {
     const { browserContext } = await this._ensureBrowserContext();
     const page = await browserContext.newPage();
-    this._currentTab = this._tabs.find(t => t.page === page)!;
-    return this._currentTab;
+    // 等待 _onPageCreated 处理完成并找到新创建的 Tab
+    let tab = this._tabs.find(t => t.page === page);
+    if (!tab) {
+      // 如果事件还没处理，等待一下
+      await new Promise(resolve => setTimeout(resolve, 50));
+      tab = this._tabs.find(t => t.page === page);
+    }
+    if (!tab)
+      throw new Error('Failed to create new tab');
+    this._currentTab = tab;
+    return tab;
   }
 
   async selectTab(index: number) {
@@ -196,6 +219,7 @@ export class Context {
 
     const promise = this._browserContextPromise;
     this._browserContextPromise = undefined;
+    this._currentUserDataDir = undefined; // 重置用户数据目录，以便新项目可以设置
 
     await promise.then(async ({ browserContext, close }) => {
       if (this.config.saveTrace)
