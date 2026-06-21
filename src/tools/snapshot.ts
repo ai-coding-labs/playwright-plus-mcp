@@ -33,7 +33,8 @@ const snapshot = defineTool({
 
   handle: async (context, params, response) => {
     // 验证项目隔离参数
-    if (!validateProjectIsolationParamsWithConfig(params, !!context.config.projectIsolation))
+    const hasProjectInfo = !!context.getProjectInfo() || validateProjectIsolationParamsWithConfig(params, !!context.config.projectIsolation);
+    if (!hasProjectInfo)
       throw new Error(getProjectIsolationErrorMessage(!!context.config.projectIsolation));
 
 

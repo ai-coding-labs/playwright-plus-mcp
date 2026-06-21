@@ -34,7 +34,8 @@ const install = defineTool({
 
   handle: async (context, params, response) => {
     // 验证项目隔离参数
-    if (!validateProjectIsolationParams(params))
+    const hasProjectInfo = !!context.getProjectInfo() || validateProjectIsolationParams(params);
+    if (!hasProjectInfo)
       throw new Error(getProjectIsolationErrorMessage(!!context.config.projectIsolation));
 
 
